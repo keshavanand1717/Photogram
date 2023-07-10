@@ -373,7 +373,7 @@ def inbox(request):
     if messages:
         message = messages[0]
         active_direct = message['user'].username
-        directs = Message.objects.filter(user=request.user, reciepient=message['user'])
+        directs = Message.objects.filter(user=user, reciepient__username=message['user'],sender__username=request.user) |  Message.objects.filter(user=user, reciepient__username=request.user,sender__username=message['user'])
         directs.update(is_read=True)
 
         for message in messages:
@@ -393,7 +393,7 @@ def Directs(request, username):
     user  = request.user
     messages = Message.get_message(user=user)
     active_direct = username
-    directs = Message.objects.filter(user=user, reciepient__username=username)  
+    directs = Message.objects.filter(user=user, reciepient__username=username,sender__username=request.user) |  Message.objects.filter(user=user, reciepient__username=request.user,sender__username=username)
     directs.update(is_read=True)
 
     for message in messages:
